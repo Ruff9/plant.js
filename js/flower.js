@@ -3,35 +3,28 @@ class Flower {
     this.plantId = plantId;
     this.bud = bud;
     this.color = randomRedColor();
-    this.petals = [bud];
-    this.maxPetals = 35;
+    this.width = 0;
+    this.maxWidth = random(25, 32);
     this.growSpeed = GROWTH_SPEED;
     this.energy = 0;
+  }
+
+  display() {
+    noStroke();
+    fill(this.color);
+    ellipse(this.bud.x, this.bud.y, this.width);
   }
 
   bloom() {
     this.energy = this.energy + this.growSpeed;
 
-    if(this.petals.length >= this.maxPetals) {
+    if(this.width >= this.maxWidth) {
       parent(this.plantId).state = 'done';
       return;
     }
 
     if (this.energy >= 100) {
-      let newPetals = [];
-
-      for (let i = 0; i < this.petals.length; i++) {
-        let newP = table.findCellsInContact(this.petals[i]);
-        newPetals.push(newP);
-      }
-
-      newPetals = newPetals.flat().filter(onlyUnique);
-
-      for (let i = 0; i < newPetals.length; i++) {
-        newPetals[i].color = this.color;
-      }
-
-      this.petals = this.petals.concat(newPetals);
+      this.width ++;
       this.energy = 0;
     }
   }

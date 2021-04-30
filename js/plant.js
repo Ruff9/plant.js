@@ -1,5 +1,4 @@
 class Plant {
-
   constructor(seed) {
     this.id = Plant.incrementId();
     this.seed = seed;
@@ -8,7 +7,10 @@ class Plant {
 
     this.state = 'waiting';
     this.delay = Math.floor(random(10, 300));
+    // this.delay = 0;
     this.energy = 0;
+
+    this.privacy = 24;
 
     this.init(seed);
   }
@@ -30,8 +32,7 @@ class Plant {
         break;
       case 'blooming':
         if (this.flower == null) {
-          let bud = this.rod.body[this.rod.body.length - 1];
-          this.flower = new Flower(this.id, bud);
+          this.flower = new Flower(this.id, this.rod.head);
         }
         this.flower.bloom();
         break;
@@ -39,11 +40,11 @@ class Plant {
         break;
     }
 
-    let cells = this.rod.body;
-    if (this.flower) { cells = [...cells, ...this.flower.petals].filter(onlyUnique); }
+    let elements = [this.rod, this.flower];
 
-    for (let i = 0; i < cells.length; i++) {
-      cells[i].display();
+    for (let i = 0; i < elements.length; i++) {
+      if (elements[i] == null) { continue; }
+      elements[i].display();
     }
   }
 

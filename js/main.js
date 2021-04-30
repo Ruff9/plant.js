@@ -2,31 +2,25 @@ let table, ground;
 let black, brown;
 
 const BASE_SIZE = 12; // pixels
-const PLANT_COUNT = 20;
-const GROWTH_SPEED = 15; // entre 0 et 100
+const PLANT_COUNT = 10;
+const GROWTH_SPEED = 50; // entre 0 et 100
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);
   black = color(0);
   brown = color(30, 20, 10);
+  ground = canvas.height *2/3;
 
   background(black);
 
+  noStroke();
+  fill(brown);
+  rect(0, ground, windowWidth, canvas.height - ground);
+
   table = new Table();
-  ground = floor(table.rows*2/3);
-
-  for ( let k = 0; k < table.columns; k++ ) {
-    for ( let l = 0; l < table.rows; l++ ) {
-      let cell = new Cell({x: k, y: l});
-      if ( l > ground ) cell.color = brown;
-
-      table.cells.push(cell);
-      cell.display();
-    }
-  }
 
   for ( let i = 0; i < PLANT_COUNT; i++ ) {
-    let seed = table.findCellByPosition(freeSpot());
+    let seed = freeSpot();
     let plant = new Plant(seed);
   }
 }
@@ -37,34 +31,37 @@ function draw() {
   }
 }
 
+class Table {
+  constructor() {
+    this.plants = [];
+  }
+}
+
 function randomSpot() {
-  return { x: Math.floor(random(15, table.columns - 15)), y: ground };
+  let padding = 35;
+  return { x: Math.floor(random(padding, canvas.width - padding)), y: ground };
+}
+
+function middleSpot() {
+  return { x: canvas.width/2, y: ground };
 }
 
 function freeSpot() {
-  let taken, available = [];
-
   if (table.plants.length == 0) return randomSpot();
+  else return findFreeSpot();
 
-  if (table.plants.length > 0) {
-    taken = table.plants.map(plant => plant.seed.position.x);
-  }
+  function findFreeSpot() {
+    let spot = randomSpot();
 
-  if (taken.length >= 1) {
-    taken = taken.reduce((acc, cur) => {
-      return acc.concat([cur , cur-1, cur+1]);
-    }, []);
-  }
+    for ( let i = 0; i < table.plants.length; i++ ) {
+      let min = table.plants[i].seed.x - table.plants[i].privacy;
+      let max = table.plants[i].seed.x + table.plants[i].privacy;
 
-  for(let i = 15; i < table.columns - 15; i++) {
-    if(!taken.includes(i)) {
-      available.push(i);
+      if(spot.x > min && spot.x < max) return findFreeSpot();
     }
+
+    return spot;
   }
-
-  let spot = available[Math.floor(Math.random() * available.length)];
-
-  return { x: spot, y: ground };
 }
 
 function randomGreenColor() {

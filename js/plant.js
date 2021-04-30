@@ -6,7 +6,7 @@ class Plant {
     this.flower = null;
 
     this.state = 'waiting';
-    this.delay = Math.floor(random(10, 300));
+    this.delay = Math.floor(random(0, 300));
     // this.delay = 0;
     this.energy = 0;
 
@@ -16,9 +16,7 @@ class Plant {
   }
 
   init(seed) {
-    table.plants.push(this);
-    let rod = new Rod(this.id, seed);
-    this.rod = rod;
+    this.rod = new Rod(this.id, seed);
   }
 
   display() {
@@ -31,9 +29,7 @@ class Plant {
         this.rod.grow();
         break;
       case 'blooming':
-        if (this.flower == null) {
-          this.flower = new Flower(this.id, this.rod.head);
-        }
+        this.flower = this.flower || new Flower(this.id, this.rod.head);
         this.flower.bloom();
         break;
       case 'done':
@@ -42,9 +38,9 @@ class Plant {
 
     let elements = [this.rod, this.flower];
 
-    for (let i = 0; i < elements.length; i++) {
-      if (elements[i] == null) { continue; }
-      elements[i].display();
+    for (let element of elements) {
+      if (element == null) continue;
+      element.display();
     }
   }
 
@@ -56,8 +52,7 @@ class Plant {
 }
 
 function parent(id) {
-  let plant = table.plants.find(x => x.id === id);
-  return plant;
+  return table.plants.find(x => x.id === id);
 }
 
 function onlyUnique(value, index, self) {

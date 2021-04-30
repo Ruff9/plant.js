@@ -1,7 +1,6 @@
-let table, ground;
-let black, brown;
+let table = { plants: [] };
+let ground, black, brown;
 
-const BASE_SIZE = 12; // pixels
 const PLANT_COUNT = 10;
 const GROWTH_SPEED = 50; // entre 0 et 100
 
@@ -17,28 +16,20 @@ function setup() {
   fill(brown);
   rect(0, ground, windowWidth, canvas.height - ground);
 
-  table = new Table();
-
   for ( let i = 0; i < PLANT_COUNT; i++ ) {
-    let seed = freeSpot();
-    let plant = new Plant(seed);
+    let plant = new Plant(freeSpot());
+    table.plants.push(plant);
   }
 }
 
 function draw() {
-  for ( let i = 0; i < table.plants.length; i++ ) {
-    table.plants[i].display();
-  }
-}
-
-class Table {
-  constructor() {
-    this.plants = [];
+  for (let plant of table.plants) {
+    plant.display();
   }
 }
 
 function randomSpot() {
-  let padding = 35;
+  let padding = 50;
   return { x: Math.floor(random(padding, canvas.width - padding)), y: ground };
 }
 
@@ -53,9 +44,9 @@ function freeSpot() {
   function findFreeSpot() {
     let spot = randomSpot();
 
-    for ( let i = 0; i < table.plants.length; i++ ) {
-      let min = table.plants[i].seed.x - table.plants[i].privacy;
-      let max = table.plants[i].seed.x + table.plants[i].privacy;
+    for (let plant of table.plants) {
+      let min = plant.seed.x - plant.privacy;
+      let max = plant.seed.x + plant.privacy;
 
       if(spot.x > min && spot.x < max) return findFreeSpot();
     }

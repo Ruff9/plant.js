@@ -8,6 +8,4 @@ class Leaf {
     this.body = [attach];
     this.color = randomGreenColor();
   }
-
-
 }

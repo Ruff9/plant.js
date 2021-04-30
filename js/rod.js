@@ -28,18 +28,11 @@ class Rod {
       return;
     }
 
-    // this.body[0].color = this.color;
     this.energy = this.energy + this.growSpeed;
 
     if (this.energy >= 100) {
-      // let lastCell = this.body[this.body.length - 1];
-      // let newCell = table.findCellByPosition({x: lastCell.position.x, y: lastCell.position.y - 1});
-      //
-      // newCell.color = this.color;
-
       this.size = this.size + this.growthMultiplier;
       this.head.y = this.head.y - this.growthMultiplier;
-      // this.body.push(newCell);
       this.energy = 0;
     }
   }
